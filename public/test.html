@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Laravel Echo + Vue 3</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.2/dist/echo.iife.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h3>Messages reçus :</h3>
+    <ul>
+      <li v-for="msg in messages" :key="msg.id">{{ msg.content }}</li>
+    </ul>
+  </div>
+
+  <script>
+    const { createApp, reactive } = Vue;
+
+    createApp({
+      setup() {
+        const messages = reactive([]);
+
+        window.Pusher = Pusher;
+
+        const echo = new Echo({
+          broadcaster: 'pusher',
+          key: 'local',
+          wsHost: '127.0.0.1',
+          wsPort: 6001,
+          forceTLS: false,
+          encrypted: false,
+          enabledTransports: ['ws', 'wss'],
+          authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
+          auth: {
+            withCredentials: true, // envoie cookies Laravel
+          },
+        });
+
+        echo.private('admin').listen('MessageSent', e => {
+          console.log('Event reçu', e.message);
+          messages.push(e.message);
+        });
+
+        return { messages };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

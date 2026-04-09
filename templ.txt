@@ -1,0 +1,6 @@
+Array
+(
+    [name] => COPY CASH PREMIUM GROUPE
+    [is_public] => false
+    [description] => C'est un groupe où nous partagerons des opportunités de la finance blanche particulièrement les plateformes d'investissement avec des retours à cours terme.
+)
